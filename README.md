@@ -94,20 +94,58 @@ de la prueba. Una vez vencido ese plazo, no se recibirán nuevas entregas.
 
 ## Anotaciones del postulante
 
-Completa este espacio antes de entregar tu solución.
-
 ### Instrucciones de ejecución
 
-Indica los comandos necesarios para instalar las dependencias, configurar la base
-de datos, ejecutar el backend, ejecutar la interfaz y correr las pruebas. La
-solución debe poder levantarse siguiendo únicamente estas instrucciones.
+Requisitos: Python 3.10+ y Node.js 20+.
+
+En una terminal, inicia la API desde `backend/`:
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py loaddata sample_data  # opcional: carga categorías y productos de ejemplo
+python manage.py runserver
+```
+
+La API queda disponible en `http://127.0.0.1:8000/api/`. Para comprobarla o
+correr su suite de pruebas, desde `backend/` ejecuta:
+
+```bash
+python manage.py check
+python manage.py test
+```
+
+En una segunda terminal, inicia el frontend:
+
+```bash
+cd frontend
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+El catálogo estará disponible en `http://localhost:3000`. `NEXT_PUBLIC_API_URL`
+en `frontend/.env.local` permite apuntar el frontend a otra instancia de la API;
+debe incluir el prefijo `/api` y no una barra final. Para verificar el build de
+producción del frontend, ejecuta `npm run build` desde `frontend/`.
 
 ### Decisiones y observaciones
 
-Describe brevemente cualquier decisión técnica relevante, supuesto, limitación o
-mejora pendiente.
+- Se usó Next.js con componentes y estado local de React: el alcance no requiere
+  una librería de componentes ni estado global.
+- El frontend consulta los endpoints reales de productos y categorías. La
+  búsqueda y el filtro se envían como query parameters a la API para conservar
+  la lógica de negocio en Django/DRF.
+- Tras crear un producto se vuelve a consultar el listado con los filtros activos,
+  por lo que el resultado aparece sin recargar la página manualmente.
 
 ### Herramientas de IA utilizadas
 
-Si utilizaste herramientas de IA, indica cuáles y para qué. Si no utilizaste
-ninguna, indícalo también.
+Se utilizaron ChatGPT y Codex como apoyo acotado. ChatGPT se empleó para
+análisis, planificación y revisión; Codex, para implementación y validación.
+La organización y trazabilidad del trabajo se apoyaron además en Project-os v2.
+El código y las decisiones finales fueron revisados y comprendidos antes de
+incorporarlos a la solución.
