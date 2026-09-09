@@ -109,14 +109,9 @@ cp .env.example .env
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-Reemplaza el valor de `DJANGO_SECRET_KEY` en `backend/.env` por el valor generado
-y carga las variables en la terminal antes de ejecutar Django:
-
-```bash
-set -a
-. ./.env
-set +a
-```
+Reemplaza el valor de `DJANGO_SECRET_KEY` en `backend/.env` por el valor
+generado. Django carga ese archivo local automáticamente al iniciar; el archivo
+`.env.example` solo es una plantilla y no se carga directamente.
 
 `backend/.env.example` documenta todas las variables disponibles:
 
@@ -128,13 +123,13 @@ set +a
 - `DJANGO_CORS_ALLOWED_ORIGINS`: orígenes separados por comas permitidos para
   el frontend.
 
-El proyecto no carga archivos `.env` automáticamente: se usa la shell para
-mantener la configuración simple y evitar una dependencia adicional. Si no se
-proporciona `DJANGO_SECRET_KEY`, Django se detiene con un error explícito. Hosts
-y CORS tienen defaults restringidos a los puertos locales documentados y pueden
-sobrescribirse mediante las variables anteriores.
+Las variables ya presentes en el entorno tienen precedencia sobre
+`backend/.env`. Si no se proporciona `DJANGO_SECRET_KEY` ni en el entorno ni en
+ese archivo local, Django se detiene con un error explícito. Hosts y CORS tienen
+defaults restringidos a los puertos locales documentados y pueden sobrescribirse
+mediante las variables anteriores.
 
-En una terminal, inicia la API desde `backend/` una vez cargado el entorno:
+En una terminal, inicia la API desde `backend/`:
 
 ```bash
 python -m venv .venv
@@ -146,8 +141,7 @@ python manage.py runserver
 ```
 
 La API queda disponible en `http://127.0.0.1:8000/api/`. Para comprobarla o
-correr su suite de pruebas, mantén las variables cargadas y desde `backend/`
-ejecuta:
+correr su suite de pruebas, desde `backend/` ejecuta:
 
 ```bash
 python manage.py check
@@ -169,9 +163,12 @@ debe incluir el prefijo `/api` y no una barra final. Para verificar el build de
 producción del frontend, ejecuta `npm run build` desde `frontend/`.
 
 Para la configuración local por defecto, `NEXT_PUBLIC_API_URL` apunta a
-`http://127.0.0.1:8000/api`, que está incluido explícitamente en los orígenes
-CORS permitidos del backend. Si cambias esa URL, ajusta
-`DJANGO_CORS_ALLOWED_ORIGINS` cuando corresponda.
+`http://127.0.0.1:8000/api`: indica la URL de la API a la que el frontend envía
+requests. `DJANGO_CORS_ALLOWED_ORIGINS` es distinto: indica los orígenes desde
+los que Django acepta requests cross-origin, por defecto
+`http://localhost:3000` y `http://127.0.0.1:3000`. Si sirves el frontend desde
+otro origen, añádelo a `DJANGO_CORS_ALLOWED_ORIGINS`; cambiar la URL de la API
+no implica cambiar CORS por sí mismo.
 
 ### Decisiones y observaciones
 

@@ -4,9 +4,13 @@ import os
 from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Local configuration is optional; values already supplied by the process win.
+load_dotenv(BASE_DIR / ".env", override=False)
 
 
 def get_bool_env(name, default):
@@ -34,8 +38,7 @@ def get_list_env(name, default):
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
     raise ImproperlyConfigured(
-        "DJANGO_SECRET_KEY must be set. Use backend/.env.example to configure "
-        "local development."
+        "DJANGO_SECRET_KEY must be set in the environment or backend/.env."
     )
 
 DEBUG = get_bool_env("DJANGO_DEBUG", default=True)
