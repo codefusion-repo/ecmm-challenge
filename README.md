@@ -98,10 +98,40 @@ de la prueba. Una vez vencido ese plazo, no se recibirán nuevas entregas.
 
 Requisitos: Python 3.10+ y Node.js 20+.
 
-En una terminal, inicia la API desde `backend/`:
+#### Configuración local del backend
+
+La configuración de Django se toma de variables de entorno. Desde un checkout
+limpio, crea tu archivo local no versionado y genera una clave aleatoria:
 
 ```bash
 cd backend
+cp .env.example .env
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+Reemplaza el valor de `DJANGO_SECRET_KEY` en `backend/.env` por el valor
+generado. Django carga ese archivo local automáticamente al iniciar; el archivo
+`.env.example` solo es una plantilla y no se carga directamente.
+
+`backend/.env.example` documenta todas las variables disponibles:
+
+- `DJANGO_SECRET_KEY`: obligatoria; genera un valor aleatorio local y no lo
+  compartas ni lo versiones.
+- `DJANGO_DEBUG`: acepta `true`/`false` (también `1`/`0`); el valor local
+  documentado es `True`.
+- `DJANGO_ALLOWED_HOSTS`: lista separada por comas para Django.
+- `DJANGO_CORS_ALLOWED_ORIGINS`: orígenes separados por comas permitidos para
+  el frontend.
+
+Las variables ya presentes en el entorno tienen precedencia sobre
+`backend/.env`. Si no se proporciona `DJANGO_SECRET_KEY` ni en el entorno ni en
+ese archivo local, Django se detiene con un error explícito. Hosts y CORS tienen
+defaults restringidos a los puertos locales documentados y pueden sobrescribirse
+mediante las variables anteriores.
+
+En una terminal, inicia la API desde `backend/`:
+
+```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
@@ -132,6 +162,14 @@ en `frontend/.env.local` permite apuntar el frontend a otra instancia de la API;
 debe incluir el prefijo `/api` y no una barra final. Para verificar el build de
 producción del frontend, ejecuta `npm run build` desde `frontend/`.
 
+Para la configuración local por defecto, `NEXT_PUBLIC_API_URL` apunta a
+`http://127.0.0.1:8000/api`: indica la URL de la API a la que el frontend envía
+requests. `DJANGO_CORS_ALLOWED_ORIGINS` es distinto: indica los orígenes desde
+los que Django acepta requests cross-origin, por defecto
+`http://localhost:3000` y `http://127.0.0.1:3000`. Si sirves el frontend desde
+otro origen, añádelo a `DJANGO_CORS_ALLOWED_ORIGINS`; cambiar la URL de la API
+no implica cambiar CORS por sí mismo.
+
 ### Decisiones y observaciones
 
 - Se usó Next.js con componentes y estado local de React: el alcance no requiere
@@ -141,6 +179,11 @@ producción del frontend, ejecuta `npm run build` desde `frontend/`.
   la lógica de negocio en Django/DRF.
 - Tras crear un producto se vuelve a consultar el listado con los filtros activos,
   por lo que el resultado aparece sin recargar la página manualmente.
+- Django exige que `DJANGO_SECRET_KEY` llegue desde el entorno; no hay una clave
+  real versionada. `DEBUG`, hosts y CORS se pueden ajustar por variables, con
+  defaults limitados a la ejecución local documentada.
+- Esta configuración es deliberadamente local: no incorpora deployment,
+  HTTPS/TLS gestionado, autenticación, secret manager ni hardening de producción.
 
 ### Herramientas de IA utilizadas
 
