@@ -1,11 +1,11 @@
-from rest_framework import generics, viewsets
+from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 
 from .models import Category, Product
 from .serializers import CategorySerializer, ProductSerializer
 
 
-class CategoryListView(generics.ListAPIView):
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 

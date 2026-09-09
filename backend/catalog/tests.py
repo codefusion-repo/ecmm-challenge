@@ -94,9 +94,18 @@ class ProductApiTests(APITestCase):
         self.assertEqual([item["name"] for item in search_response.data], ["Cafe instantaneo"])
 
     def test_lists_categories_and_rejects_a_non_numeric_category_filter(self):
+        api_root_response = self.client.get("/api/")
         categories_response = self.client.get("/api/categories/")
         invalid_filter_response = self.client.get("/api/products/?category=not-a-number")
 
+        self.assertEqual(api_root_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            api_root_response.data,
+            {
+                "categories": "http://testserver/api/categories/",
+                "products": "http://testserver/api/products/",
+            },
+        )
         self.assertEqual(categories_response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             [item["name"] for item in categories_response.data], ["Bebidas", "Snacks"]
