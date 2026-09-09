@@ -1,0 +1,64 @@
+[
+  {
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+      "name": "Electrónica"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+      "name": "Hogar"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+      "name": "Teclado mecánico",
+      "description": "Teclado compacto con interruptores mecánicos",
+      "price": "59990.00",
+      "stock": 8,
+      "category": 1,
+      "created_at": "2026-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+      "name": "Mouse inalámbrico",
+      "description": "Mouse ergonómico con conexión Bluetooth",
+      "price": "24990.00",
+      "stock": 15,
+      "category": 1,
+      "created_at": "2026-01-02T12:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+      "name": "Lámpara de escritorio",
+      "description": "Lámpara LED regulable para escritorio",
+      "price": "18990.00",
+      "stock": 10,
+      "category": 2,
+      "created_at": "2026-01-03T12:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+      "name": "Botella térmica",
+      "description": "Botella de acero inoxidable de 750 ml",
+      "price": "12990.00",
+      "stock": 20,
+      "category": 2,
+      "created_at": "2026-01-04T12:00:00Z"
+    }
+  }
+]

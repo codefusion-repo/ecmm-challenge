@@ -12,11 +12,25 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 python manage.py migrate
+python manage.py loaddata sample_data
 python manage.py runserver
 ```
 
 La API queda disponible en `http://127.0.0.1:8000/`. Se permiten solicitudes
 desde un frontend local en `http://localhost:3000` y `http://127.0.0.1:3000`.
+
+## Datos de demostración
+
+Después de aplicar las migraciones, carga la lista de demostración con:
+
+```bash
+python manage.py loaddata sample_data
+```
+
+El fixture agrega las categorías `Electrónica` y `Hogar`, junto con cuatro
+productos. Es opcional y está separado de las migraciones: permite probar la
+API en una instalación limpia sin que los datos de ejemplo formen parte del
+esquema.
 
 ## Endpoints
 

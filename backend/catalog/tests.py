@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.core.management import call_command
 from django.db import IntegrityError, transaction
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -119,3 +120,27 @@ class ProductApiTests(APITestCase):
         with self.assertRaises(IntegrityError):
             with transaction.atomic():
                 Category.objects.create(name="Bebidas")
+
+
+class SampleDataApiTests(APITestCase):
+    def test_loads_sample_data_and_exposes_it_through_the_api(self):
+        call_command("loaddata", "sample_data", verbosity=0)
+
+        categories_response = self.client.get("/api/categories/")
+        products_response = self.client.get("/api/products/")
+
+        self.assertEqual(categories_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(products_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            [item["name"] for item in categories_response.data],
+            ["Electrónica", "Hogar"],
+        )
+        self.assertEqual(
+            [item["name"] for item in products_response.data],
+            [
+                "Teclado mecánico",
+                "Mouse inalámbrico",
+                "Lámpara de escritorio",
+                "Botella térmica",
+            ],
+        )
