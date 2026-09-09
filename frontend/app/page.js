@@ -26,7 +26,6 @@ export default function CatalogPage() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({ search: "", category: "" });
-  const [activeFilters, setActiveFilters] = useState({ search: "", category: "" });
   const [productForm, setProductForm] = useState(emptyProduct);
   const [loading, setLoading] = useState(true);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
@@ -73,16 +72,15 @@ export default function CatalogPage() {
   }, []);
 
   useEffect(() => {
-    loadProducts(activeFilters);
-  }, [activeFilters, loadProducts]);
+    const debounceId = setTimeout(() => {
+      loadProducts(filters);
+    }, 250);
+
+    return () => clearTimeout(debounceId);
+  }, [filters, loadProducts]);
 
   function categoryName(categoryId) {
     return categories.find((category) => category.id === categoryId)?.name || `Categoría #${categoryId}`;
-  }
-
-  function applyFilters(event) {
-    event.preventDefault();
-    setActiveFilters(filters);
   }
 
   async function createProduct(event) {
@@ -108,7 +106,7 @@ export default function CatalogPage() {
 
       setProductForm(emptyProduct);
       setFormSuccess(`“${data.name}” fue agregado al catálogo.`);
-      await loadProducts(activeFilters);
+      await loadProducts(filters);
     } catch (error) {
       setFormError(error.message || "No fue posible crear el producto.");
     } finally {
@@ -126,7 +124,7 @@ export default function CatalogPage() {
 
       <section className="panel" aria-labelledby="filters-title">
         <h2 id="filters-title">Buscar y filtrar</h2>
-        <form className="filters" onSubmit={applyFilters}>
+        <div className="filters">
           <label>
             Buscar por nombre
             <input value={filters.search} onChange={(event) => setFilters({ ...filters, search: event.target.value })} placeholder="Ej. cafetera" />
@@ -138,8 +136,7 @@ export default function CatalogPage() {
               {categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
             </select>
           </label>
-          <button type="submit">Aplicar</button>
-        </form>
+        </div>
       </section>
 
       <section aria-labelledby="products-title">

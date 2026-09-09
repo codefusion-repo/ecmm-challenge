@@ -144,6 +144,8 @@ producción del frontend, ejecuta `npm run build` desde `frontend/`.
 
 ### Herramientas de IA utilizadas
 
-Se utilizó Codex como apoyo para implementar, revisar y validar la solución. El
-código y las decisiones resultantes fueron revisados para comprenderlos y
-mantenerlos dentro del alcance del challenge.
+Se utilizaron ChatGPT y Codex como apoyo acotado. ChatGPT se empleó para
+análisis, planificación y revisión; Codex, para implementación y validación.
+La organización y trazabilidad del trabajo se apoyaron además en Project-os v2.
+El código y las decisiones finales fueron revisados y comprendidos antes de
+incorporarlos a la solución.
